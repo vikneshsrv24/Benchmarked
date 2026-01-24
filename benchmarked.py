@@ -5,8 +5,10 @@ import streamlit as st
 st.title("Project: Benchmaked")
 st.subheader("Does Nifty50 actually helps us?")
 
-df = yf.download('^NSEI', start='2020-01-01', end='2025-01-01')
 
+df = yf.download('^NSEI', start='2020-01-01', end='2026-01-01')
+# Remove double column names.
+df.columns = df.columns.get_level_values(0)
 # Display data in a table
 st.write("### Raw Market Data")
 st.dataframe(df.head())
@@ -14,3 +16,21 @@ st.dataframe(df.head())
 # Display a line chart
 st.write('Nifty 50 closing price trend')
 st.line_chart(df['Close'])
+
+# move date from index to normal column
+df = df.reset_index()
+# Temproray column to identify month and year
+df['Month_Year'] = df['Date'].dt.to_period('M')
+
+sip_df = df.groupby('Month_Year').first().reset_index()
+st.dataframe(sip_df.head())
+
+sip_amount = st.sidebar.number_input("Monthly SIP Amount", min_value=500,value=5000 )
+sip_df['units_bought'] = sip_amount / sip_df['Close']
+
+sip_df['Total_Units'] = sip_df['units_bought'].cumsum()
+
+sip_df['portfolio_value'] = sip_df['Total_Units'] * sip_df['Close']
+
+st.write("Your Portfolio Growth Over Time")
+st.line_chart(sip_df.set_index('Date')['portfolio_value'])
