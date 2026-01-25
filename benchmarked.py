@@ -21,8 +21,11 @@ def get_data(ticker,start,end):
     # Remove double column names.
     data.columns = data.columns.get_level_values(0)
     data = data.reset_index()
-
-    return data
+    # Removeing unwanted rowns from the source itself.
+    #data = data.drop(columns=['Volume','Open','High','Low','Adj Close'], errors='ignore')
+    # Return only date without 00:00:00
+    data['Date'] = data['Date'].dt.date
+    return data[['Date','Close']]
 
 st.sidebar.header("Investment Settings")
 sip_amount = st.sidebar.slider(
@@ -41,7 +44,7 @@ start_date = st.sidebar.date_input(
     "Start Date",
     value = before_ten_years,
     min_value=dt.date(2000,1,1),
-    max_value=today
+    max_value=today,
 )
 # End Date
 end_date = st.sidebar.date_input(
@@ -52,3 +55,9 @@ end_date = st.sidebar.date_input(
 )
 
 
+df =get_data("^NSEI", start_date, end_date)
+
+st.subheader(f"Data Analysis :{start_date} to {end_date}")
+st.dataframe(df.head())
+
+st.markdown("----")
