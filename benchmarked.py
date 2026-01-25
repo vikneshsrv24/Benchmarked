@@ -58,6 +58,6 @@ end_date = st.sidebar.date_input(
 df =get_data("^NSEI", start_date, end_date)
 
 st.subheader(f"Data Analysis :{start_date} to {end_date}")
-st.dataframe(df.head())
+st.dataframe(df.head(), width='stretch')
 
 st.markdown("----")
