@@ -1,50 +1,54 @@
 import yfinance as yf
 import streamlit as st
+import datetime as dt
+import pandas as pd
 
 # Adding title to the website.
-st.title("Project: Benchmaked")
-st.subheader("Does Nifty50 actually helps us?")
+st.set_page_config(
+    page_title="Benchmarked",
+    layout="wide",
+    initial_sidebar_state="auto",
+    page_icon="📈",
+    )
+
+st.title("Does Nifty50 actually helps us?")
+
+# Caching the downloaded data
+@st.cache_data()
+def get_data(ticker,start,end):
+    data = yf.download(ticker, start=start, end=end)
+
+    # Remove double column names.
+    data.columns = data.columns.get_level_values(0)
+    data = data.reset_index()
+
+    return data
+
+st.sidebar.header("Investment Settings")
+sip_amount = st.sidebar.slider(
+    "Monthly SIP",
+    min_value=500,
+    max_value=100000,
+    step=500
+    )
+
+# adding last 10 years of data.
+today = dt.date.today()
+before_ten_years = today - dt.timedelta(10*365)
+
+# Start Date
+start_date = st.sidebar.date_input(
+    "Start Date",
+    value = before_ten_years,
+    min_value=dt.date(2000,1,1),
+    max_value=today
+)
+# End Date
+end_date = st.sidebar.date_input(
+    "End Date",
+    value = today,
+    min_value=before_ten_years,
+    max_value=today
+)
 
 
-df = yf.download('^NSEI', start='2020-01-01', end='2026-01-20')
-
-# Sidebar
-sip_amount = st.sidebar.number_input("Monthly SIP Amount", min_value=500,value=5000 )
-
-# Remove double column names.
-df.columns = df.columns.get_level_values(0)
-
-# Display data in a table
-st.write("### Raw Market Data")
-st.dataframe(df.head())
-
-# Display a line chart
-st.write('Nifty 50 closing price trend')
-st.line_chart(df['Close'])
-
-# move date from index to normal column
-df = df.reset_index()
-# Temproray column to identify month and year
-df['Month_Year'] = df['Date'].dt.to_period('M')
-
-sip_df = df.groupby('Month_Year').first().reset_index()
-st.dataframe(sip_df.head())
-
-sip_df['units_bought'] = sip_amount / sip_df['Close']
-sip_df['Total_Units'] = sip_df['units_bought'].cumsum()
-sip_df['portfolio_value'] = sip_df['Total_Units'] * sip_df['Close']
-
-st.write("Your Portfolio Growth Over Time")
-st.line_chart(sip_df.set_index('Date')['portfolio_value'])
-
-# calucluate the total months of investment
-
-# 1. Calculate the single number for total money put in
-total_invested_final = len(sip_df) * sip_amount
-
-# 2. Grab the single number for what it's worth now
-current_value_final = sip_df['portfolio_value'].iloc[-1]
-
-# 3. Just display them
-st.write(f"Total Invested: ₹{total_invested_final:,.0f}")
-st.write(f"Today's Value: ₹{current_value_final:,.0f}")
