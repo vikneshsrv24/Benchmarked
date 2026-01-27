@@ -56,6 +56,13 @@ end_date = st.sidebar.date_input(
 
 
 df =get_data("^NSEI", start_date, end_date)
+# We are slicing the YYYY-MM-DD to YYYY-MM for better visulaization. 
+df['Month_Year'] = df['Date'].astype(str).str[0:7]
+# Now we will be grouping the months --> ?
+# Cuz we have to find what if the user invested or SIP's in 1st of every month for a duration.
+sip_df = df.groupby('Month_Year').first().reset_index()
+# st.write(f"Original rows: {len(df)}")
+# st.write(f"SIP rows: {len(sip_df)}")
 
 st.subheader(f"Data Analysis :{start_date} to {end_date}")
 st.dataframe(df.head(), width='stretch')
