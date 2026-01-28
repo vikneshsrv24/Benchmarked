@@ -126,3 +126,16 @@ fig = px.line(
 fig.update_layout(yaxis_tickformat = ',.0f')
 fig.update_traces(hovertemplate = 'Time: %{x} <br>Amount: ₹%{y:,.0f}')
 st.plotly_chart(fig, use_container_width=True)
+
+
+st.write("---")
+
+st.markdown(
+    """
+    <div style='text-align: center; color: grey; font-size: 12px;'>
+        © 2026 Benchmarked. All rights reserved. <br>
+        Built by SRV.
+    </div>
+    """, 
+    unsafe_allow_html=True
+)
