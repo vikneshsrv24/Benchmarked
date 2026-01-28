@@ -27,7 +27,7 @@ Unlike standard calculators that use estimated annual returns, this application 
 
 1. **Clone the repository:**
 ```bash
-git clone https://github.com/vikneshsrv/benchmarked.git
+git clone https://github.com/vikneshsrv24/benchmarked.git
 cd benchmarked
 
 ```
