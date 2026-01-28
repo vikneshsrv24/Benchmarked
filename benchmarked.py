@@ -7,7 +7,7 @@ import plotly.express as px
 # Adding title to the website.
 st.set_page_config(
     page_title="Benchmarked",
-    layout="wide",
+    layout="centered",
     initial_sidebar_state="auto",
     page_icon="📈",
     )
@@ -116,7 +116,6 @@ fig = px.line(
     x='Date',
     y='Amount',
     color='Type',
-    title="Charts",
     color_discrete_map={
         "Invested_amount":"red",
         "Portfoilo_value":"green"
