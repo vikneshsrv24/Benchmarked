@@ -28,13 +28,11 @@ def get_data(ticker,start,end):
     data['Date'] = data['Date'].dt.date
     return data[['Date','Close']]
 
-# --- NEW SETTINGS BLOCK (Mobile Friendly) ---
 
-# 1. Define the dates first
 today = dt.date.today()
 before_ten_years = today - dt.timedelta(10*365)
 
-# 2. Create the Expander
+
 with st.expander("⚙️ Investment Settings (Click to Change)", expanded=True):
     
     # SIP Amount
@@ -46,7 +44,7 @@ with st.expander("⚙️ Investment Settings (Click to Change)", expanded=True):
         value=5000
     )
 
-    # Date Inputs side-by-side
+    
     col1, col2 = st.columns(2)
     
     with col1:
