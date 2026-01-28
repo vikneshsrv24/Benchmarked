@@ -28,34 +28,44 @@ def get_data(ticker,start,end):
     data['Date'] = data['Date'].dt.date
     return data[['Date','Close']]
 
-st.sidebar.header("Investment Settings")
-sip_amount = st.sidebar.slider(
-    "Monthly SIP",
-    min_value=500,
-    max_value=100000,
-    step=500
-    )
+# --- NEW SETTINGS BLOCK (Mobile Friendly) ---
 
-# adding last 10 years of data.
+# 1. Define the dates first
 today = dt.date.today()
 before_ten_years = today - dt.timedelta(10*365)
 
-# Start Date
-start_date = st.sidebar.date_input(
-    "Start Date",
-    value = before_ten_years,
-    min_value=dt.date(2000,1,1),
-    max_value=today,
-    format="DD-MM-YYYY"
-)
-# End Date
-end_date = st.sidebar.date_input(
-    "End Date",
-    value = today,
-    min_value=before_ten_years,
-    max_value=today,
-    format="DD-MM-YYYY"
-)
+# 2. Create the Expander
+with st.expander("⚙️ Investment Settings (Click to Change)", expanded=True):
+    
+    # SIP Amount
+    sip_amount = st.slider(
+        "Monthly SIP Amount (₹)", 
+        min_value=500, 
+        max_value=100000, 
+        step=500,
+        value=5000
+    )
+
+    # Date Inputs side-by-side
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        start_date = st.date_input(
+            "Start Date",
+            value=before_ten_years,
+            min_value=dt.date(2000, 1, 1),
+            max_value=today,
+            format="DD-MM-YYYY"
+        )
+        
+    with col2:
+        end_date = st.date_input(
+            "End Date",
+            value=today,
+            min_value=before_ten_years,
+            max_value=today,
+            format="DD-MM-YYYY"
+        )
 
 
 df =get_data("^NSEI", start_date, end_date)
