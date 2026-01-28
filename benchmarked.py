@@ -120,7 +120,7 @@ chart_data = sip_df[['Date','Invested_amount', 'Portfoilo_value']].melt(
 # 2.Interactive chart
 fig = px.line(
     chart_data,
-    x='Date',
+    x='Time',
     y='Amount',
     color='Type',
     color_discrete_map={
