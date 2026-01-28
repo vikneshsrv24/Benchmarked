@@ -33,7 +33,7 @@ today = dt.date.today()
 before_ten_years = today - dt.timedelta(10*365)
 
 
-with st.expander("⚙️ Investment Settings (Click to Change)", expanded=True):
+with st.expander("Investment Settings 💸", expanded=True):
     
     # SIP Amount
     sip_amount = st.slider(
@@ -67,7 +67,6 @@ with st.expander("⚙️ Investment Settings (Click to Change)", expanded=True):
 
 
 df =get_data("^NSEI", start_date, end_date)
-st.subheader(f"{start_date} ---- {end_date}")
 # We are slicing the YYYY-MM-DD to YYYY-MM for better visulaization. 
 df['Month_Year'] = df['Date'].astype(str).str[0:7]
 # Now we will be grouping the months --> ?
@@ -132,7 +131,7 @@ fig = px.line(
 
 fig.update_layout(yaxis_tickformat = ',.0f')
 fig.update_traces(hovertemplate = 'Time: %{x} <br>Amount: ₹%{y:,.0f}')
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, width='content')
 
 
 st.write("---")
