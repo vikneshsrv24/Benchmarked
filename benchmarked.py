@@ -2,6 +2,7 @@ import yfinance as yf
 import streamlit as st
 import datetime as dt
 import pandas as pd
+import plotly.express as px
 
 # Adding title to the website.
 st.set_page_config(
@@ -58,7 +59,7 @@ end_date = st.sidebar.date_input(
 
 
 df =get_data("^NSEI", start_date, end_date)
-st.subheader(f"{start_date} -- {end_date}")
+st.subheader(f"{start_date} ---- {end_date}")
 # We are slicing the YYYY-MM-DD to YYYY-MM for better visulaization. 
 df['Month_Year'] = df['Date'].astype(str).str[0:7]
 # Now we will be grouping the months --> ?
@@ -99,11 +100,29 @@ col2.metric("📈 Current Value", f"₹{current_val:,.0f}")
 col3.metric("🚀 Absolute Profit", f"₹{profit:,.0f}", delta=f"{return_pct:.1f}%")
 
 
-# --- BLOCK 7: THE WEALTH CHART ---
-st.subheader("Index Chart 🎯")
+# CHART ---
+st.subheader("Chart 🎯")
 
 # We need to set the Date as the "Index" so the chart uses it for the X-axis
-chart_data = sip_df.set_index('Date')[['Invested_amount', 'Portfoilo_value']]
+chart_data = sip_df[['Date','Invested_amount', 'Portfoilo_value']].melt(
+    id_vars=['Date'],
+    var_name='Type',
+    value_name='Amount'
+)
 
-# Plot it
-st.line_chart(chart_data)
+# 2.Interactive chart
+fig = px.line(
+    chart_data,
+    x='Date',
+    y='Amount',
+    color='Type',
+    title="Charts",
+    color_discrete_map={
+        "Invested_amount":"red",
+        "Portfoilo_value":"green"
+    }
+)
+
+fig.update_layout(yaxis_tickformat = ',.0f')
+fig.update_traces(hovertemplate = 'Time: %{x} <br>Amount: ₹%{y:,.0f}')
+st.plotly_chart(fig, use_container_width=True)
